@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Auth;
 
 use Exception;
-use Illuminate\Support\Str;
 use App\Models\SocialLogin;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
@@ -84,24 +83,6 @@ class SocialLoginController extends Controller
         // Never link an OAuth identity by email alone. The account owner must
         // authenticate locally before linking a new provider.
         return redirect()->route('auth.login')->with('error', trans('auth.social.not_linked', ['provider' => ucfirst($provider)]));
-    }
-
-    protected function generateUsername(string $name): string
-    {
-        $base = Str::slug($name);
-        if (empty($base)) {
-            $base = 'user';
-        }
-
-        $username = $base;
-        $counter = 1;
-
-        while (User::where('username', $username)->exists()) {
-            $username = $base . $counter;
-            $counter++;
-        }
-
-        return $username;
     }
 
     protected function configureDriver(string $provider): bool
